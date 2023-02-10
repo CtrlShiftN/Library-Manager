@@ -1,4 +1,4 @@
-package library;
+package Library-Manager;
 
 import java.util.Scanner;
 import java.time.LocalDateTime;
@@ -214,6 +214,7 @@ class User {
 class Student extends User {
 	private String course;
 	private int year;
+	private ArrayList<Student> studentList;
 
 	public Student(String ID, String name, String email, String password, String birthday, String phoneNumber,
 			String address, int gender, String course, int year) throws Exception {
@@ -221,11 +222,12 @@ class Student extends User {
 		if (repOk(course, year)) {
 			this.course = course;
 			this.year = year;
+			studentList = new ArrayList<Student>();
 		}
 	}
 
 	public Student() {
-
+		studentList = new ArrayList<Student>();
 	}
 
 	public String getCourse() {
@@ -264,6 +266,10 @@ class Student extends User {
 
 	private boolean repOk(String course, int year) {
 		return isValidCourse(course) && isValidYear(year);
+	}
+	
+	public ArrayList<Student> getAllStudent(){
+		return this.studentList;
 	}
 
 	@Override
