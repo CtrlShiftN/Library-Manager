@@ -9,9 +9,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 class Main {
-	private Admin admin;
+	private static Admin admin;
+	private static Librarian librarian;
 	public static void main(String[] args) {
 		admin = new Admin();
+		librarian = new Librarian();
 		showMainMenu();
 		checkMainMenu();
 	}
@@ -132,7 +134,6 @@ class Main {
 		} else if (choice == 4) {
 			System.out.println("Loading librarian accounts...");
 			ArrayList<Librarian> libList = admin.getAllLibrarian();
-			System.out.println(libList.size());
 			for (Librarian lib : libList) {
 				System.out.println(lib.toString());
 			}
@@ -213,7 +214,6 @@ class Main {
 	}
 
 	private static void checkLibrarianMenu() {
-		Librarian librarian = new Librarian();
 		Scanner sc = new Scanner(System.in);
 		int choice = Integer.parseInt(sc.nextLine());
 		if (choice == 2) {
