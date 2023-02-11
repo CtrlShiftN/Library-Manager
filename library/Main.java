@@ -9,12 +9,236 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 class Main {
-	public static void main(String[] args) throws Exception {
-		Admin ad = new Admin();
-		ad.createLibrarian();
-		ArrayList<Librarian> libList = ad.getAllLibrarian();
-		libList.forEach((lib)->System.out.println(lib.toString()));
+	private Admin admin;
+	public static void main(String[] args) {
+		admin = new Admin();
+		showMainMenu();
+		checkMainMenu();
 	}
+
+	private static void showMainMenu() {
+		System.out.println("================Library Management================");
+		System.out.println("|                                                |");
+		System.out.println("|  Choose an option:                             |");
+		System.out.println("|  1. Act as admin                               |");
+		System.out.println("|  2. Act as librarian                           |");
+		System.out.println("|  3. Quit                                       |");
+		System.out.println("|                                                |");
+		System.out.println("==================================================");
+	}
+
+	private static void checkMainMenu() {
+		Scanner sc = new Scanner(System.in);
+		int choice = Integer.parseInt(sc.nextLine());
+		if (choice == 3) {
+			System.exit(0);
+		}
+		while (choice != 1 && choice != 2) {
+			showMainMenu();
+			choice = Integer.parseInt(sc.nextLine());
+		}
+		if (choice == 1) {
+			showAdminMenu();
+			checkAdminMenu();
+		} else {
+			showLibrarianMenu();
+			checkLibrarianMenu();
+		}
+	}
+
+	private static void showAdminMenu() {
+		System.out.println("================Library Management================");
+		System.out.println("|                                                |");
+		System.out.println("|  Choose an option:                             |");
+		System.out.println("|                                                |");
+		System.out.println("|         ------ Librarian Manager ------        |");
+		System.out.println("|  1. Create a librarian account                 |");
+		System.out.println("|  2. Remove a librarian account                 |");
+		System.out.println("|  3. Update a librarian account                 |");
+		System.out.println("|  4. Show all librarian accounts                |");
+		System.out.println("|                                                |");
+		System.out.println("|         ------  Student Manager  ------        |");
+		System.out.println("|  5. Create a student account                   |");
+		System.out.println("|  6. Remove a student account                   |");
+		System.out.println("|  7. Update a student account                   |");
+		System.out.println("|  8. Show all student accounts                  |");
+		System.out.println("|                                                |");
+		System.out.println("|  9. Back                                       |");
+		System.out.println("|  10. Quit                                      |");
+		System.out.println("|                                                |");
+		System.out.println("==================================================");
+	}
+
+	private static void checkAdminMenu() {
+		Scanner sc = new Scanner(System.in);
+		int choice = Integer.parseInt(sc.nextLine());
+		if (choice == 9) {
+			showMainMenu();
+			checkMainMenu();
+		}
+		if (choice == 10) {
+			System.exit(0);
+		}
+		while (choice < 1 && choice > 8) {
+			showAdminMenu();
+			choice = Integer.parseInt(sc.nextLine());
+		}
+		if (choice == 1) {
+			System.out.println("Please enter librarian details:");
+			String newLibrarianID = admin.createLibrarian();
+			if (newLibrarianID != null && !newLibrarianID.trim().isEmpty()) {
+				showAdminMenu();
+				checkAdminMenu();
+			} else {
+				System.err.println("Error! Can not create librarian account...");
+				showAdminMenu();
+				checkAdminMenu();
+			}
+		} else if (choice == 2) {
+			System.out.println("Please enter librarian ID:");
+			String librarianID = sc.nextLine();
+			while (admin.getLibrarianByID(librarianID) == null) {
+				System.err.println("Error! The librarian ID does not exist! \nPlease enter another ID: ");
+				librarianID = sc.nextLine();
+			}
+			System.out.println("Deleting... Librarian ID " + librarianID);
+			boolean isDeleted = admin.removeLibrarian(librarianID);
+			if (isDeleted == true) {
+				showAdminMenu();
+				checkAdminMenu();
+			} else {
+				System.err.println("Error! Can not delete librarian account...");
+				showAdminMenu();
+				checkAdminMenu();
+			}
+		} else if (choice == 3) {
+			System.out.println("Please enter librarian ID:");
+			String librarianID = sc.nextLine();
+			while (admin.getLibrarianByID(librarianID) == null) {
+				System.err.println("Error! The librarian ID does not exist! \nPlease enter another ID: ");
+				librarianID = sc.nextLine();
+			}
+			Librarian updatedLibrarianAccount = new Librarian();
+			updatedLibrarianAccount.promtDetail();
+			boolean isUpdated = admin.updateLibrarian(librarianID, updatedLibrarianAccount);
+			if (isUpdated == true) {
+				showAdminMenu();
+				checkAdminMenu();
+			} else {
+				System.err.println("Error! Can not update librarian account...");
+				showAdminMenu();
+				checkAdminMenu();
+			}
+		} else if (choice == 4) {
+			System.out.println("Loading librarian accounts...");
+			ArrayList<Librarian> libList = admin.getAllLibrarian();
+			System.out.println(libList.size());
+			for (Librarian lib : libList) {
+				System.out.println(lib.toString());
+			}
+			System.out.println();
+			showAdminMenu();
+			checkAdminMenu();
+		} else if (choice == 5) {
+			System.out.println("Please enter student details:");
+			String newStudentID = admin.createStudent();
+			if (newStudentID != null && !newStudentID.trim().isEmpty()) {
+				showAdminMenu();
+				checkAdminMenu();
+			} else {
+				System.err.println("Error! Can not create student account...");
+				showAdminMenu();
+				checkAdminMenu();
+			}
+		} else if (choice == 6) {
+			System.out.println("Please enter student ID:");
+			String studentID = sc.nextLine();
+			while (admin.getStudentByID(studentID) == null) {
+				System.err.println("Error! The student ID does not exist! \nPlease enter another ID: ");
+				studentID = sc.nextLine();
+			}
+			System.out.println("Deleting... Student ID " + studentID);
+			boolean isDeleted = admin.removeStudent(studentID);
+			if (isDeleted == true) {
+				showAdminMenu();
+				checkAdminMenu();
+			} else {
+				System.err.println("Error! Can not delete student account...");
+				showAdminMenu();
+				checkAdminMenu();
+			}
+		} else if (choice == 7) {
+			System.out.println("Please enter student ID:");
+			String studentID = sc.nextLine();
+			while (admin.getStudentByID(studentID) == null) {
+				System.err.println("Error! The student ID does not exist! \nPlease enter another ID: ");
+				studentID = sc.nextLine();
+			}
+			Student updatedStudentAccount = new Student();
+			updatedStudentAccount.promtDetail();
+			updatedStudentAccount.promtEducationDetail();
+			boolean isUpdated = admin.updateStudent(studentID, updatedStudentAccount);
+			if (isUpdated == true) {
+				showAdminMenu();
+				checkAdminMenu();
+			} else {
+				System.err.println("Error! Can not update student account...");
+				showAdminMenu();
+				checkAdminMenu();
+			}
+		} else if (choice == 8) {
+			System.out.println("Loading student accounts...");
+			ArrayList<Student> stuList = admin.getAllStudent();
+			for (Student stu : stuList) {
+				System.out.println(stu.toString());
+			}
+			System.out.println();
+			showAdminMenu();
+			checkAdminMenu();
+		}
+	}
+
+	private static void showLibrarianMenu() {
+		System.out.println("================Library Management================");
+		System.out.println("|                                                |");
+		System.out.println("|  Choose an option:                             |");
+		System.out.println("|                                                |");
+		System.out.println("|         ------  Student Manager  ------        |");
+		System.out.println("|  1. Show all student accounts                  |");
+		System.out.println("|                                                |");
+		System.out.println("|  2. Back                                       |");
+		System.out.println("|  3. Quit                                       |");
+		System.out.println("|                                                |");
+		System.out.println("==================================================");
+	}
+
+	private static void checkLibrarianMenu() {
+		Librarian librarian = new Librarian();
+		Scanner sc = new Scanner(System.in);
+		int choice = Integer.parseInt(sc.nextLine());
+		if (choice == 2) {
+			showMainMenu();
+			checkMainMenu();
+		}
+		if (choice == 3) {
+			System.exit(0);
+		}
+		while (choice < 1 && choice > 6) {
+			showLibrarianMenu();
+			choice = Integer.parseInt(sc.nextLine());
+		}
+		if (choice == 1) {
+			System.out.println("Loading student accounts...");
+			ArrayList<Student> stuList = librarian.getAllStudent();
+			for (Student stu : stuList) {
+				System.out.println(stu.toString());
+			}
+			System.out.println();
+			showLibrarianMenu();
+			checkLibrarianMenu();
+		}
+	}
+
 }
 
 class User {
@@ -25,13 +249,13 @@ class User {
 	private String birthday;
 	private String phoneNumber;
 	private String address;
-	private int gender;
+	private String gender;
 	private int status;
 	private String createdAt;
 	private String updatedAt;
 
 	public User(String ID, String name, String email, String password, String birthday, String phoneNumber,
-			String address, int gender){
+			String address, String gender) {
 		this.ID = ID;
 		this.name = name;
 		this.email = email;
@@ -46,9 +270,11 @@ class User {
 	}
 
 	public User() {
-
+		this.status = 1;
+		this.createdAt = getCurrentDatetime();
+		this.updatedAt = getCurrentDatetime();
 	};
-	
+
 	public User(String ID) {
 		this.ID = ID;
 	};
@@ -137,11 +363,11 @@ class User {
 		}
 	}
 
-	public int getGender() {
+	public String getGender() {
 		return gender;
 	}
 
-	public boolean setGender(int gender) {
+	public boolean setGender(String gender) {
 		this.gender = gender;
 		return true;
 	}
@@ -158,7 +384,7 @@ class User {
 	public String getID() {
 		return ID;
 	}
-	
+
 	private boolean promtName() {
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Please enter name: ");
@@ -169,7 +395,7 @@ class User {
 		}
 		return true;
 	}
-	
+
 	private boolean promtEmail() {
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Please enter email: ");
@@ -180,25 +406,30 @@ class User {
 		}
 		return true;
 	}
-	
+
 	private boolean promtPassword() {
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Please enter password (Enter 'q' to use default password 'User@1234'): ");
 		String password = sc.nextLine();
-		if (password.equalsIgnoreCase("q")) {
-			this.setPassword("User@1234");
-			System.out.println("here");
-			return true;
-		}else {
-			while (this.setPassword(password) != true) {
-				System.out.println("Password should have lenght >= 8, and contain at least 1 uppercase character, 1 special character!");
-				System.out.println("Please re-enter password: ");
-				password = sc.nextLine();
+		boolean isStop = false;
+		while (isStop != true) {
+			if (password.equalsIgnoreCase("q")) {
+				this.setPassword("User@1234");
+				isStop = true;
+			} else {
+				if (this.setPassword(password) == false) {
+					System.out.println(
+							"Password should have lenght >= 8, and contain at least 1 uppercase character, 1 special character!");
+					System.out.println("Please re-enter password: ");
+					password = sc.nextLine();
+				} else {
+					isStop = true;
+				}
 			}
-			return true;
 		}
+		return true;
 	}
-	
+
 	private boolean promtBirthday() {
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Please enter birthday (yyyy-MM-dd): ");
@@ -209,7 +440,7 @@ class User {
 		}
 		return true;
 	}
-	
+
 	private boolean promtPhoneNumber() {
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Please enter phone number: ");
@@ -220,7 +451,7 @@ class User {
 		}
 		return true;
 	}
-	
+
 	private boolean promtAddress() {
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Please enter address: ");
@@ -231,19 +462,19 @@ class User {
 		}
 		return true;
 	}
-	
+
 	private boolean promtGender() {
 		Scanner sc = new Scanner(System.in);
-		System.out.println("Please choose gender: [0-male, 1-female]");
-		int gender = sc.nextInt();
-		while (gender != 0 || gender != 1) {
-			System.out.println("Invalid gender! Please choose a gender: [0-male, 1-female]");
-			gender = sc.nextInt();
+		System.out.println("Please choose gender: [M-Male, F-Female]");
+		String gender = sc.nextLine();
+		while (!gender.equalsIgnoreCase("M") && !gender.equalsIgnoreCase("F")) {
+			System.out.println("Invalid gender! Please choose a gender: [M-Male, F-Female]");
+			gender = sc.nextLine();
 		}
 		this.setGender(gender);
 		return true;
 	}
-	
+
 	private String genID() {
 		String temp = this.getCurrentDatetime();
 		temp = temp.replace("-", "");
@@ -251,7 +482,7 @@ class User {
 		temp = temp.replace(" ", "");
 		return temp;
 	}
-	
+
 	public void promtDetail() {
 		String ID = this.genID();
 		this.ID = ID;
@@ -308,8 +539,8 @@ class User {
 
 	@Override
 	public String toString() {
-		return "ID=" + ID + ", name=" + name + ", email=" + email + ", password=" + password + ", birthday="
-				+ birthday + ", phoneNumber=" + phoneNumber + ", address=" + address + ", gender=" + gender;
+		return "ID=" + ID + ", name=" + name + ", email=" + email + ", password=" + password + ", birthday=" + birthday
+				+ ", phoneNumber=" + phoneNumber + ", address=" + address + ", gender=" + gender;
 	}
 
 }
@@ -317,9 +548,9 @@ class User {
 class Student extends User {
 	private String course;
 	private int year;
-	
+
 	public Student(String ID, String name, String email, String password, String birthday, String phoneNumber,
-			String address, int gender, String course, int year) throws Exception {
+			String address, String gender, String course, int year) throws Exception {
 		super(ID, name, email, password, birthday, phoneNumber, address, gender);
 		if (repOk(course, year)) {
 			this.course = course;
@@ -328,7 +559,7 @@ class Student extends User {
 	}
 
 	public Student() {
-		
+
 	}
 
 	public String getCourse() {
@@ -356,7 +587,7 @@ class Student extends User {
 			return false;
 		}
 	}
-	
+
 	public boolean promtCourse() {
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Please enter course: ");
@@ -367,7 +598,7 @@ class Student extends User {
 		}
 		return true;
 	}
-	
+
 	public boolean promtYear() {
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Please enter year: ");
@@ -378,7 +609,7 @@ class Student extends User {
 		}
 		return true;
 	}
-	
+
 	public void promtEducationDetail() {
 		this.promtCourse();
 		this.promtYear();
@@ -400,7 +631,7 @@ class Student extends User {
 	public String toString() {
 		return super.toString() + ", course=" + course + ", year=" + year;
 	}
-	
+
 }
 
 class Admin extends User implements LibraryManagementTools, AdminTools {
@@ -408,17 +639,58 @@ class Admin extends User implements LibraryManagementTools, AdminTools {
 	private ArrayList<Librarian> librarianList;
 	private final int USER_TYPE_LIBRARIAN = 0;
 	private final int USER_TYPE_STUDENT = 1;
-	
+	private String librarianFilePath;
+	private String studentFilePath;
+
 	public Admin() {
 		studentList = new ArrayList<Student>();
 		librarianList = new ArrayList<Librarian>();
+		librarianFilePath = "librarian.dat";
+		studentFilePath = "student.dat";
+	}
+
+	public Admin(ArrayList<Librarian> newLibrarianList) {
+		librarianList = newLibrarianList;
+		studentList = new ArrayList<Student>();
+	}
+
+	public Admin(ArrayList<Student> newStudentList, ArrayList<Librarian> newLibrarianList) {
+		if (newStudentList.isEmpty()) {
+			if (newLibrarianList.isEmpty()) {
+				studentList = new ArrayList<Student>();
+				librarianList = new ArrayList<Librarian>();
+			} else {
+				studentList = new ArrayList<Student>();
+				librarianList = newLibrarianList;
+			}
+		} else {
+			if (newLibrarianList.isEmpty()) {
+				studentList = newStudentList;
+				librarianList = new ArrayList<Librarian>();
+			} else {
+				studentList = newStudentList;
+				librarianList = newLibrarianList;
+			}
+		}
 	}
 
 	public Admin(String ID, String name, String email, String password, String birthday, String phoneNumber,
-			String address, int gender) {
+			String address, String gender) {
 		super(ID, name, email, password, birthday, phoneNumber, address, gender);
 		studentList = new ArrayList<Student>();
 		librarianList = new ArrayList<Librarian>();
+		librarianFilePath = "librarian.dat";
+		studentFilePath = "student.dat";
+	}
+
+	private int findLibrarianByID(String librarianID) {
+		int index = -1;
+		for (int i = 0; i < this.librarianList.size(); i++) {
+			if (this.librarianList.get(i).getID().equalsIgnoreCase(librarianID)) {
+				index = i;
+			}
+		}
+		return index;
 	}
 
 	@Override
@@ -430,217 +702,327 @@ class Admin extends User implements LibraryManagementTools, AdminTools {
 	}
 
 	@Override
-	public boolean removeLibrarian(int librarianID) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean removeLibrarian(String librarianID) {
+		int index = this.findLibrarianByID(librarianID);
+		if (index >= 0) {
+			this.librarianList.remove(index);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	@Override
-	public boolean updateLibrarian(int librarianID, Librarian librarian) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean updateLibrarian(String librarianID, Librarian librarian) {
+		int index = this.findLibrarianByID(librarianID);
+		if (index >= 0) {
+			this.librarianList.set(index, librarian);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	@Override
+	public Librarian getLibrarianByID(String librarianID) {
+		Librarian lib = null;
+		for (int i = 0; i < this.librarianList.size(); i++) {
+			if (this.librarianList.get(i).getID().equalsIgnoreCase(librarianID)) {
+				lib = this.librarianList.get(i);
+			}
+		}
+		return lib;
 	}
 
 	@Override
 	public ArrayList<Librarian> getAllLibrarian() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.librarianList;
 	}
-	
+
 	@Override
 	public String createStudent() {
-		// TODO Auto-generated method stub
-		return "";
+		Student stu = new Student();
+		stu.promtDetail();
+		stu.promtEducationDetail();
+		this.studentList.add(stu);
+		return stu.getID();
+	}
+
+	private int findStudentByID(String studentID) {
+		int index = -1;
+		for (int i = 0; i < this.studentList.size(); i++) {
+			if (this.studentList.get(i).getID().equalsIgnoreCase(studentID)) {
+				index = i;
+			}
+		}
+		return index;
 	}
 
 	@Override
-	public boolean removeStudent(int studentID) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean removeStudent(String studentID) {
+		int index = this.findStudentByID(studentID);
+		if (index >= 0) {
+			this.studentList.remove(index);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	@Override
-	public boolean updateStudent(int studentID, Student student) {
-		// TODO Auto-generated method stub
-		return false;
+	public Student getStudentByID(String studentID) {
+		Student stu = null;
+		for (int i = 0; i < this.studentList.size(); i++) {
+			if (this.studentList.get(i).getID().equalsIgnoreCase(studentID)) {
+				stu = this.studentList.get(i);
+			}
+		}
+		return stu;
+	}
+
+	@Override
+	public boolean updateStudent(String studentID, Student student) {
+		int index = this.findStudentByID(studentID);
+		if (index >= 0) {
+			this.studentList.set(index, student);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	@Override
 	public String createRoom() {
-		// TODO Auto-generated method stub
-		return "";
+		// TODO
+		return null;
 	}
 
 	@Override
-	public boolean removeRoom(int roomID) {
-		// TODO Auto-generated method stub
+	public boolean removeRoom(String roomID) {
+		// TODO
 		return false;
 	}
 
 	@Override
-	public boolean updateRoom(int roomID, Room room) {
-		// TODO Auto-generated method stub
+	public Room getRoomByID(String roomID) {
+		// TODO
+		return null;
+	}
+
+	@Override
+	public boolean updateRoom(String roomID, Room room) {
+		// TODO
 		return false;
 	}
 
 	@Override
 	public boolean addFacility(Facility facility) {
-		// TODO Auto-generated method stub
+		// TODO
 		return false;
 	}
 
 	@Override
-	public boolean removeFacility(int facilityID) {
-		// TODO Auto-generated method stub
+	public Facility getFacilityByID(String facilityID) {
+		// TODO
+		return null;
+	}
+
+	@Override
+	public boolean removeFacility(String facilityID) {
+		// TODO
 		return false;
 	}
 
 	@Override
-	public boolean updateFacility(int facilityID, Facility facility) {
-		// TODO Auto-generated method stub
+	public boolean updateFacility(String facilityID, Facility facility) {
+		// TODO
 		return false;
 	}
 
 	@Override
 	public boolean addBook(Book book) {
-		// TODO Auto-generated method stub
+		// TODO
 		return false;
 	}
 
 	@Override
-	public boolean updateBookDetail(int bookID, Book book) {
-		// TODO Auto-generated method stub
+	public Book getBookByID(String bookID) {
+		// TODO
+		return null;
+	}
+
+	@Override
+	public boolean updateBookDetail(String bookID, Book book) {
+		// TODO
 		return false;
 	}
 
 	@Override
-	public boolean removeBook(int bookID) {
-		// TODO Auto-generated method stub
+	public boolean removeBook(String bookID) {
+		// TODO
 		return false;
 	}
 
 	@Override
 	public ArrayList<Student> getAllStudent() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.studentList;
 	}
 
 	@Override
 	public ArrayList<Room> getAllRoom() {
-		// TODO Auto-generated method stub
+		// TODO
 		return null;
 	}
 
 	@Override
 	public ArrayList<Facility> getAllFacility() {
-		// TODO Auto-generated method stub
+		// TODO
 		return null;
 	}
 
 	@Override
 	public ArrayList<Book> getAllBook() {
-		// TODO Auto-generated method stub
+		// TODO
 		return null;
 	}
-	
-	
+
 }
 
-class Librarian extends User implements LibraryManagementTools{
+class Librarian extends User implements LibraryManagementTools {
+
+	private ArrayList<Student> studentList;
 
 	public Librarian() {
-		
+		studentList = new ArrayList<Student>();
+	}
+
+	public Librarian(ArrayList<Student> newStudentList) {
+		studentList = newStudentList;
 	}
 
 	public Librarian(String ID, String name, String email, String password, String birthday, String phoneNumber,
-			String address, int gender) {
+			String address, String gender) {
 		super(ID, name, email, password, birthday, phoneNumber, address, gender);
+		studentList = new ArrayList<Student>();
 	}
 
 	@Override
 	public boolean addBook(Book book) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean updateBookDetail(int bookID, Book book) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean removeBook(int bookID) {
-		// TODO Auto-generated method stub
+		// TODO
 		return false;
 	}
 
 	@Override
 	public ArrayList<Student> getAllStudent() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.studentList;
 	}
 
 	@Override
 	public ArrayList<Room> getAllRoom() {
-		// TODO Auto-generated method stub
+		// TODO
 		return null;
 	}
 
 	@Override
 	public ArrayList<Facility> getAllFacility() {
-		// TODO Auto-generated method stub
+		// TODO
 		return null;
 	}
 
 	@Override
 	public ArrayList<Book> getAllBook() {
-		// TODO Auto-generated method stub
+		// TODO
 		return null;
 	}
-	
+
+	@Override
+	public Book getBookByID(String bookID) {
+		// TODO
+		return null;
+	}
+
+	@Override
+	public boolean updateBookDetail(String bookID, Book book) {
+		// TODO
+		return false;
+	}
+
+	@Override
+	public boolean removeBook(String bookID) {
+		// TODO
+		return false;
+	}
+
 }
 
-interface LibraryManagementTools{
+interface LibraryManagementTools {
 	public boolean addBook(Book book);
-	public boolean updateBookDetail(int bookID, Book book);
-	public boolean removeBook(int bookID);
+
+	public Book getBookByID(String bookID);
+
+	public boolean updateBookDetail(String bookID, Book book);
+
+	public boolean removeBook(String bookID);
+
 	public ArrayList<Student> getAllStudent();
+
 	public ArrayList<Room> getAllRoom();
+
 	public ArrayList<Facility> getAllFacility();
+
 	public ArrayList<Book> getAllBook();
 }
 
 interface AdminTools {
 	public String createLibrarian(); // return new Librarian ID
-	public boolean removeLibrarian(int librarianID);
-	public boolean updateLibrarian(int librarianID, Librarian librarian);
+
+	public boolean removeLibrarian(String librarianID);
+
+	public boolean updateLibrarian(String librarianID, Librarian librarian);
+
+	public Librarian getLibrarianByID(String librarianID);
+
 	public ArrayList<Librarian> getAllLibrarian();
+
 	public String createStudent(); // return new Student ID
-	public boolean removeStudent(int studentID);
-	public boolean updateStudent(int studentID, Student student);
+
+	public boolean removeStudent(String studentID);
+
+	public Student getStudentByID(String studentID);
+
+	public boolean updateStudent(String studentID, Student student);
+
 	public String createRoom(); // return new Room ID
-	public boolean removeRoom(int roomID);
-	public boolean updateRoom(int roomID, Room room);
+
+	public boolean removeRoom(String roomID);
+
+	public Room getRoomByID(String roomID);
+
+	public boolean updateRoom(String roomID, Room room);
+
 	public boolean addFacility(Facility facility);
-	public boolean removeFacility(int facilityID);
-	public boolean updateFacility(int facilityID, Facility facility);
+
+	public Facility getFacilityByID(String facilityID);
+
+	public boolean removeFacility(String facilityID);
+
+	public boolean updateFacility(String facilityID, Facility facility);
 }
 
 class Book {
 	public Book() {
-		
+
 	}
 }
 
-class Room{
+class Room {
 	public Room() {
-		
+
 	}
 }
 
-class Facility{
+class Facility {
 	public Facility() {
-		
+
 	}
 }
