@@ -1,4 +1,4 @@
-package Library-Manager;
+package library;
 
 import java.util.Scanner;
 import java.time.LocalDateTime;
@@ -10,16 +10,10 @@ import java.util.regex.Pattern;
 
 class Main {
 	public static void main(String[] args) throws Exception {
-		Scanner sc = new Scanner(System.in);
-		Student u = new Student();
-		System.out.println("Please enter your name: ");
-		String name = sc.nextLine();
-		System.out.println(u.setName(name));
-		while (u.setName(name) != true) {
-			
-			name = sc.nextLine();
-		}
-		System.out.println("User name: " + u.toString());
+		Admin ad = new Admin();
+		ad.createLibrarian();
+		ArrayList<Librarian> libList = ad.getAllLibrarian();
+		libList.forEach((lib)->System.out.println(lib.toString()));
 	}
 }
 
@@ -53,6 +47,10 @@ class User {
 
 	public User() {
 
+	};
+	
+	public User(String ID) {
+		this.ID = ID;
 	};
 
 	private String getCurrentDatetime() {
@@ -160,6 +158,111 @@ class User {
 	public String getID() {
 		return ID;
 	}
+	
+	private boolean promtName() {
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Please enter name: ");
+		String name = sc.nextLine();
+		while (this.setName(name) != true) {
+			System.out.println("Invalid name format! Please re-enter name: ");
+			name = sc.nextLine();
+		}
+		return true;
+	}
+	
+	private boolean promtEmail() {
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Please enter email: ");
+		String email = sc.nextLine();
+		while (this.setEmail(email) != true) {
+			System.out.println("Invalid email format! Please re-enter email: ");
+			email = sc.nextLine();
+		}
+		return true;
+	}
+	
+	private boolean promtPassword() {
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Please enter password (Enter 'q' to use default password 'User@1234'): ");
+		String password = sc.nextLine();
+		if (password.equalsIgnoreCase("q")) {
+			this.setPassword("User@1234");
+			System.out.println("here");
+			return true;
+		}else {
+			while (this.setPassword(password) != true) {
+				System.out.println("Password should have lenght >= 8, and contain at least 1 uppercase character, 1 special character!");
+				System.out.println("Please re-enter password: ");
+				password = sc.nextLine();
+			}
+			return true;
+		}
+	}
+	
+	private boolean promtBirthday() {
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Please enter birthday (yyyy-MM-dd): ");
+		String birthday = sc.nextLine();
+		while (this.setBirthday(birthday) != true) {
+			System.out.println("Invalid day format! Please re-enter email (yyyy-MM-dd): ");
+			birthday = sc.nextLine();
+		}
+		return true;
+	}
+	
+	private boolean promtPhoneNumber() {
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Please enter phone number: ");
+		String tel = sc.nextLine();
+		while (this.setPhoneNumber(tel) != true) {
+			System.out.println("Invalid phone number format! Please re-enter phone number: ");
+			tel = sc.nextLine();
+		}
+		return true;
+	}
+	
+	private boolean promtAddress() {
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Please enter address: ");
+		String address = sc.nextLine();
+		while (this.setAddress(address) != true) {
+			System.out.println("Invalid address format! Please re-enter address: ");
+			address = sc.nextLine();
+		}
+		return true;
+	}
+	
+	private boolean promtGender() {
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Please choose gender: [0-male, 1-female]");
+		int gender = sc.nextInt();
+		while (gender != 0 || gender != 1) {
+			System.out.println("Invalid gender! Please choose a gender: [0-male, 1-female]");
+			gender = sc.nextInt();
+		}
+		this.setGender(gender);
+		return true;
+	}
+	
+	private String genID() {
+		String temp = this.getCurrentDatetime();
+		temp = temp.replace("-", "");
+		temp = temp.replace(":", "");
+		temp = temp.replace(" ", "");
+		return temp;
+	}
+	
+	public void promtDetail() {
+		String ID = this.genID();
+		this.ID = ID;
+		this.promtName();
+		this.promtEmail();
+		this.promtPassword();
+		this.promtBirthday();
+		this.promtPhoneNumber();
+		this.promtAddress();
+		this.promtGender();
+	}
 
 	private boolean isValidName(String name) {
 		return name.length() >= 2 && name.length() <= 200;
@@ -214,20 +317,18 @@ class User {
 class Student extends User {
 	private String course;
 	private int year;
-	private ArrayList<Student> studentList;
-
+	
 	public Student(String ID, String name, String email, String password, String birthday, String phoneNumber,
 			String address, int gender, String course, int year) throws Exception {
 		super(ID, name, email, password, birthday, phoneNumber, address, gender);
 		if (repOk(course, year)) {
 			this.course = course;
 			this.year = year;
-			studentList = new ArrayList<Student>();
 		}
 	}
 
 	public Student() {
-		studentList = new ArrayList<Student>();
+		
 	}
 
 	public String getCourse() {
@@ -255,6 +356,33 @@ class Student extends User {
 			return false;
 		}
 	}
+	
+	public boolean promtCourse() {
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Please enter course: ");
+		String course = sc.nextLine();
+		while (this.setCourse(course) != true) {
+			System.out.println("Invalid course! Please re-enter course: ");
+			course = sc.nextLine();
+		}
+		return true;
+	}
+	
+	public boolean promtYear() {
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Please enter year: ");
+		int year = sc.nextInt();
+		while (this.setYear(year) != true) {
+			System.out.println("Invalid year! Please re-enter year: ");
+			year = sc.nextInt();
+		}
+		return true;
+	}
+	
+	public void promtEducationDetail() {
+		this.promtCourse();
+		this.promtYear();
+	}
 
 	private boolean isValidCourse(String course) {
 		return course.length() >= 2 && course.length() <= 10;
@@ -267,10 +395,6 @@ class Student extends User {
 	private boolean repOk(String course, int year) {
 		return isValidCourse(course) && isValidYear(year);
 	}
-	
-	public ArrayList<Student> getAllStudent(){
-		return this.studentList;
-	}
 
 	@Override
 	public String toString() {
@@ -280,19 +404,29 @@ class Student extends User {
 }
 
 class Admin extends User implements LibraryManagementTools, AdminTools {
+	private ArrayList<Student> studentList;
+	private ArrayList<Librarian> librarianList;
+	private final int USER_TYPE_LIBRARIAN = 0;
+	private final int USER_TYPE_STUDENT = 1;
+	
 	public Admin() {
-		
+		studentList = new ArrayList<Student>();
+		librarianList = new ArrayList<Librarian>();
 	}
 
 	public Admin(String ID, String name, String email, String password, String birthday, String phoneNumber,
 			String address, int gender) {
 		super(ID, name, email, password, birthday, phoneNumber, address, gender);
+		studentList = new ArrayList<Student>();
+		librarianList = new ArrayList<Librarian>();
 	}
 
 	@Override
-	public int createLibrarian() {
-		// TODO Auto-generated method stub
-		return 0;
+	public String createLibrarian() {
+		Librarian lib = new Librarian();
+		lib.promtDetail();
+		this.librarianList.add(lib);
+		return lib.getID();
 	}
 
 	@Override
@@ -312,11 +446,11 @@ class Admin extends User implements LibraryManagementTools, AdminTools {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
 	@Override
-	public int createStudent() {
+	public String createStudent() {
 		// TODO Auto-generated method stub
-		return 0;
+		return "";
 	}
 
 	@Override
@@ -332,9 +466,9 @@ class Admin extends User implements LibraryManagementTools, AdminTools {
 	}
 
 	@Override
-	public int createRoom() {
+	public String createRoom() {
 		// TODO Auto-generated method stub
-		return 0;
+		return "";
 	}
 
 	@Override
@@ -478,14 +612,14 @@ interface LibraryManagementTools{
 }
 
 interface AdminTools {
-	public int createLibrarian(); // return new Librarian ID
+	public String createLibrarian(); // return new Librarian ID
 	public boolean removeLibrarian(int librarianID);
 	public boolean updateLibrarian(int librarianID, Librarian librarian);
 	public ArrayList<Librarian> getAllLibrarian();
-	public int createStudent(); // return new Student ID
+	public String createStudent(); // return new Student ID
 	public boolean removeStudent(int studentID);
 	public boolean updateStudent(int studentID, Student student);
-	public int createRoom(); // return new Room ID
+	public String createRoom(); // return new Room ID
 	public boolean removeRoom(int roomID);
 	public boolean updateRoom(int roomID, Room room);
 	public boolean addFacility(Facility facility);
